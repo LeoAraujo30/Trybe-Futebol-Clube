@@ -18,6 +18,7 @@ UserModel.init({
 }, {
   underscored: true,
   sequelize: db,
+  modelName: 'userModel',
   timestamps: false,
 });
 
