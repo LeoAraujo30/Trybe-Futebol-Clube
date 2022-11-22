@@ -25,6 +25,6 @@ Example.init({
 // OtherModel.belongsTo(Example, { foreignKey: 'campoB', as: 'campoEstrangeiroB' });
 
 // Example.hasMany(OtherModel, { foreignKey: 'campoC', as: 'campoEstrangeiroC' });
-// Example.hasMany(OtherModel, { foreignKey: 'campoD', as: 'campoEstrangeiroD' });
+// Example.hasMany(OtherModel, { foreignKey: 'campoD', as: 'campoEstrangeiroD' }); 
 
 export default Example;
