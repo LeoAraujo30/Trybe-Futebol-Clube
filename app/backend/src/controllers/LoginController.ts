@@ -8,14 +8,14 @@ export default class LoginController {
   public makeToken = async (req: IRequest, res: Response) => {
     if (req.user) {
       const token = await this.service.makeToken(req.user);
-      res.status(200).json({ token });
+      return res.status(200).json({ token });
     }
   };
 
   public makeLogin = async (req: IRequest, res: Response) => {
     if (req.data) {
       const { role } = req.data;
-      res.status(200).json({ role });
+      return res.status(200).json({ role });
     }
   };
 }

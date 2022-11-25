@@ -6,9 +6,6 @@ import chaiHttp = require('chai-http');
 import App from '../app';
 import UserModel from '../database/models/UserModel';
 
-
-import { Response } from 'superagent';
-
 chai.use(chaiHttp);
 
 const { app } = new App();
@@ -57,9 +54,6 @@ describe('Testando as rotas de /login', async function () {
     expect(response.status).to.equal(401);
     expect(response.body).to.deep.equal({ message: 'Incorrect email or password' });
   });
-
-
-
   it('Testando "/login/validate" caso tenha passado um token valido', async function () {
     const token = (await chai.request(app).post('/login').send(mockLogin)).body.token;
     const response = await chai.request(app).get('/login/validate').set('authorization', token);
