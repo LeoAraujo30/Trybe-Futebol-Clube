@@ -10,9 +10,8 @@ export default class LoginService {
   };
 
   public makeToken = async (obj: Ilogin): Promise<string> => {
-    const user = await this.getUser(obj);
-    const { email, password, role } = user;
-    const token = jwt.sign({ email, password, role }, 'secret');
+    const { email, password, role, id, username } = obj;
+    const token = jwt.sign({ email, password, role, id, username }, 'jwt_secret');
     return token;
   };
 }

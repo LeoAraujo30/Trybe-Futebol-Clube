@@ -15,7 +15,7 @@ const controller = new LoginController();
 
 router.post('/', middleware.validateLogin, controller.makeToken);
 
-// router.get('/validate', middleware.validateToken, controller.makeLogin);
+router.get('/validate', middleware.validateToken, controller.makeLogin);
 
 router.use(
   (err: Error, _req: Request, res: Response, _next: NextFunction) => {
