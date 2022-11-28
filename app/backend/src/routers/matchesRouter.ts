@@ -14,7 +14,7 @@ router.post('/', middleware.validateToken, middleware.validateMatche, controller
 
 router.patch('/:id/finish', controller.finishMatche);
 
-// router.patch('/:id', controller.finishMatche);
+router.patch('/:id', controller.updateMatche);
 
 router.use(
   (err: Error, _req: Request, res: Response, _next: NextFunction) => {
