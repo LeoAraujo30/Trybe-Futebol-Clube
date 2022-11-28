@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-// import IRequest from '../interfaces/IRequest';
+import IRequest from '../interfaces/IRequest';
 import MatchesService from '../services/MatchesService';
 
 export default class MatchesController {
@@ -15,10 +15,13 @@ export default class MatchesController {
     }
   };
 
-//   public getTeam = async (req: IRequest, res: Response) => {
-//     const { id } = req.params;
-//     const result = await this.service.getOne(Number(id));
-//     if (!result) return res.status(404).json({ message: 'Team not found' });
-//     return res.status(200).json(result);
-//   };
+  public addMatche = async (req: IRequest, res: Response) => {
+    const result = await this.service.addMatche(req.body);
+    return res.status(201).json(result);
+  };
+
+  public finishMatche = async (req: IRequest, res: Response) => {
+    await this.service.finishMatche(Number(req.params.id));
+    return res.status(200).json({ message: 'Finished' });
+  };
 }

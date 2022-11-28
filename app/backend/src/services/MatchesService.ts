@@ -24,4 +24,13 @@ export default class MatchesService {
     });
     return result;
   };
+
+  public addMatche = async (obj: Imatches): Promise<Imatches> => {
+    const result = await MatcheModel.create({ ...obj, inProgress: true });
+    return result;
+  };
+
+  public finishMatche = async (id: number) => {
+    await MatcheModel.update({ inProgress: false }, { where: { id } });
+  };
 }
