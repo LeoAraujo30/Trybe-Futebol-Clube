@@ -88,15 +88,13 @@ export default class LeaderboardService {
     return result as Iteam[];
   };
 
-  // private orderLeaderboard = (leaderboards: Ileaderboard[]): Ileaderboard[] => {
-  //   const result = leaderboards.map((leader1) => {
-  //     leaderboards.forEach((leader2) => {
-  //       if (leader1.totalPoints < leader2.totalPoints) {
-  //       }
-  //     });
-  //   });
-  //   return result;
-  // };
+  private orderLeaderboard = (leaderboards: Ileaderboard[]): Ileaderboard[] => {
+    const result = leaderboards.sort((a, b) => (
+      b.totalPoints - a.totalPoints || b.totalVictories - a.totalVictories
+      || b.goalsBalance - a.goalsBalance || b.goalsFavor - a.goalsFavor || b.goalsOwn - a.goalsOwn
+    ));
+    return result;
+  };
 
   public getAllByHomeTeam = async (): Promise<Ileaderboard[]> => {
     const teams = await this.getAllTeams();
@@ -116,7 +114,7 @@ export default class LeaderboardService {
         efficiency: this.getEfficiency(filter, 'homeTeamGoals', 'awayTeamGoals'),
       };
     });
-    return result as Ileaderboard[];
+    return this.orderLeaderboard(result) as Ileaderboard[];
   };
 
   public getAllByAwayTeam = async (): Promise<Ileaderboard[]> => {
@@ -137,7 +135,7 @@ export default class LeaderboardService {
         efficiency: this.getEfficiency(filter, 'awayTeamGoals', 'homeTeamGoals'),
       };
     });
-    return result as Ileaderboard[];
+    return this.orderLeaderboard(result) as Ileaderboard[];
   };
 
   private makeObj = (home: Ileaderboard, away: Ileaderboard): Ileaderboard => {
@@ -167,6 +165,6 @@ export default class LeaderboardService {
       const awayTeam = byAwayTeam.find((teamA) => teamA.name === team.teamName) as Ileaderboard;
       return this.makeObj(homeTeam, awayTeam);
     });
-    return result as Ileaderboard[];
+    return this.orderLeaderboard(result) as Ileaderboard[];
   };
 }
