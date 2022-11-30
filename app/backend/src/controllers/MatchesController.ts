@@ -21,12 +21,14 @@ export default class MatchesController {
   };
 
   public finishMatche = async (req: IRequest, res: Response) => {
-    await this.service.finishMatche(Number(req.params.id));
+    const result = await this.service.finishMatche(Number(req.params.id));
+    if (!result) return res.status(404).json({ message: 'Not found id' });
     return res.status(200).json({ message: 'Finished' });
   };
 
   public updateMatche = async (req: IRequest, res: Response) => {
-    await this.service.updateMatche(Number(req.params.id), req.body);
+    const result = await this.service.updateMatche(Number(req.params.id), req.body);
+    if (!result) return res.status(404).json({ message: 'Not found id or new body' });
     return res.status(200).json({ message: 'Updated' });
   };
 }

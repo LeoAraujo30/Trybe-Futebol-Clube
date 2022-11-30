@@ -30,14 +30,16 @@ export default class MatchesService {
     return result;
   };
 
-  public finishMatche = async (id: number) => {
-    await MatcheModel.update({ inProgress: false }, { where: { id } });
+  public finishMatche = async (id: number): Promise<number> => {
+    const [result] = await MatcheModel.update({ inProgress: false }, { where: { id } });
+    return result;
   };
 
   public updateMatche = async (
     id: number,
     obj: { homeTeamGoals: number; awayTeamGoals: number },
-  ) => {
-    await MatcheModel.update({ ...obj }, { where: { id } });
+  ): Promise<number> => {
+    const [result] = await MatcheModel.update({ ...obj }, { where: { id } });
+    return result;
   };
 }
