@@ -1,6 +1,6 @@
 <h1>Descrição do Projeto BackEnd</h1>
 
-<p>O objetivo desse projeto é montar uma API de dados para preencher um hanking de partidas de futebol sendo possivel ver, adicionar, alterar e deletar as partidas de futebol.</p>
+<p>O objetivo desse projeto é montar uma API de dados para preencher uma tabela de partidas de futebol, com direito a um hanking dos melhores times. Sendo possivel ver, adicionar e alterar essas partidas de futebol.</p>
 
 <h3>Tecnologias usadas:</h3>
 
