@@ -5,6 +5,7 @@ import Imatches from '../interfaces/Imatches';
 import Iteam from '../interfaces/Iteam';
 
 type teamGoals = 'homeTeamGoals' | 'awayTeamGoals';
+type teamMatche = 'home' | 'away';
 
 export default class LeaderboardService {
   constructor(private matchesService: MatchesService = new MatchesService()) {}
@@ -96,49 +97,30 @@ export default class LeaderboardService {
     return result;
   };
 
-  public getAllByHomeTeam = async (): Promise<Ileaderboard[]> => {
+  public getTeamsByMatchesIn = async (str: teamMatche): Promise<Ileaderboard[]> => {
     const teams = await this.getAllTeams();
     const matches = await this.matchesService.getByInProgress('false');
+    const key1 = str === 'home' ? 'homeTeamGoals' : 'awayTeamGoals';
+    const key2 = str === 'home' ? 'awayTeamGoals' : 'homeTeamGoals';
     const result = teams.map((team) => {
-      const filter = matches.filter((mat) => mat.homeTeam === team.id);
+      const filter = matches.filter((mat) => mat[`${str}Team`] === team.id);
       return {
         name: team.teamName,
-        totalPoints: this.getTotalPoints(filter, 'homeTeamGoals', 'awayTeamGoals'),
+        totalPoints: this.getTotalPoints(filter, key1, key2),
         totalGames: this.getTotalGames(filter),
-        totalVictories: this.getTotalVictories(filter, 'homeTeamGoals', 'awayTeamGoals'),
-        totalDraws: this.getTotalDraws(filter, 'homeTeamGoals', 'awayTeamGoals'),
-        totalLosses: this.getTotalLosses(filter, 'homeTeamGoals', 'awayTeamGoals'),
-        goalsFavor: this.getGoalsFavor(filter, 'homeTeamGoals'),
-        goalsOwn: this.getGoalsOwn(filter, 'awayTeamGoals'),
-        goalsBalance: this.getGoalsBalance(filter, 'homeTeamGoals', 'awayTeamGoals'),
-        efficiency: this.getEfficiency(filter, 'homeTeamGoals', 'awayTeamGoals'),
+        totalVictories: this.getTotalVictories(filter, key1, key2),
+        totalDraws: this.getTotalDraws(filter, key1, key2),
+        totalLosses: this.getTotalLosses(filter, key1, key2),
+        goalsFavor: this.getGoalsFavor(filter, key1),
+        goalsOwn: this.getGoalsOwn(filter, key2),
+        goalsBalance: this.getGoalsBalance(filter, key1, key2),
+        efficiency: this.getEfficiency(filter, key1, key2),
       };
     });
     return this.orderLeaderboard(result) as Ileaderboard[];
   };
 
-  public getAllByAwayTeam = async (): Promise<Ileaderboard[]> => {
-    const teams = await this.getAllTeams();
-    const matches = await this.matchesService.getByInProgress('false');
-    const result = teams.map((team) => {
-      const filter = matches.filter((mat) => mat.awayTeam === team.id);
-      return {
-        name: team.teamName,
-        totalPoints: this.getTotalPoints(filter, 'awayTeamGoals', 'homeTeamGoals'),
-        totalGames: this.getTotalGames(filter),
-        totalVictories: this.getTotalVictories(filter, 'awayTeamGoals', 'homeTeamGoals'),
-        totalDraws: this.getTotalDraws(filter, 'awayTeamGoals', 'homeTeamGoals'),
-        totalLosses: this.getTotalLosses(filter, 'awayTeamGoals', 'homeTeamGoals'),
-        goalsFavor: this.getGoalsFavor(filter, 'awayTeamGoals'),
-        goalsOwn: this.getGoalsOwn(filter, 'homeTeamGoals'),
-        goalsBalance: this.getGoalsBalance(filter, 'awayTeamGoals', 'homeTeamGoals'),
-        efficiency: this.getEfficiency(filter, 'awayTeamGoals', 'homeTeamGoals'),
-      };
-    });
-    return this.orderLeaderboard(result) as Ileaderboard[];
-  };
-
-  private makeObj = (home: Ileaderboard, away: Ileaderboard): Ileaderboard => {
+  private joinAllTeamMatches = (home: Ileaderboard, away: Ileaderboard): Ileaderboard => {
     const result = {
       name: home.name,
       totalPoints: home.totalPoints + away.totalPoints,
@@ -158,12 +140,12 @@ export default class LeaderboardService {
 
   public getAll = async (): Promise<Ileaderboard[]> => {
     const teams = await this.getAllTeams();
-    const byHomeTeam = await this.getAllByHomeTeam();
-    const byAwayTeam = await this.getAllByAwayTeam();
-    const result = teams.map((team) => {
-      const homeTeam = byHomeTeam.find((teamH) => teamH.name === team.teamName) as Ileaderboard;
-      const awayTeam = byAwayTeam.find((teamA) => teamA.name === team.teamName) as Ileaderboard;
-      return this.makeObj(homeTeam, awayTeam);
+    const inHome = await this.getTeamsByMatchesIn('home');
+    const inAway = await this.getTeamsByMatchesIn('away');
+    const result = teams.map(({teamName}) => {
+      const homeTeam = inHome.find((team) => team.name === teamName) as Ileaderboard;
+      const awayTeam = inAway.find((team) => team.name === teamName) as Ileaderboard;
+      return this.joinAllTeamMatches(homeTeam, awayTeam);
     });
     return this.orderLeaderboard(result) as Ileaderboard[];
   };

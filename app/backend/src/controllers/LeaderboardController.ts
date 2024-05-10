@@ -5,12 +5,12 @@ export default class LeaderboardController {
   constructor(private service: LeaderboardService = new LeaderboardService()) {}
 
   public getAllByHomeTeam = async (req: Request, res: Response) => {
-    const result = await this.service.getAllByHomeTeam();
+    const result = await this.service.getTeamsByMatchesIn('home');
     res.status(200).json(result);
   };
 
   public getAllByAwayTeam = async (req: Request, res: Response) => {
-    const result = await this.service.getAllByAwayTeam();
+    const result = await this.service.getTeamsByMatchesIn('away');
     res.status(200).json(result);
   };
 
